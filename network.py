@@ -1,6 +1,7 @@
 from neuron import Neuron
 import pandas as pd
 from sklearn.model_selection import train_test_split
+import numpy as np
 
 class Network(object):
 
@@ -9,7 +10,7 @@ class Network(object):
         self.amount_neurons_layers = neuron_layers
         self.n_layers = len(neuron_layers)
         self.ind = ind
-        self.dep = dep
+        self.dep = dep 
         self.data = data
         self.network = None
     
@@ -27,7 +28,7 @@ class Network(object):
         for i in range(self.n_layers):
             layer = []
             for j in range (self.amount_neurons_layers[i]):
-                layer.append(Neuron([0] * len(self.ind)))
+                layer.append(Neuron(np.array([0.0] * len(self.ind))))
             network.append(layer)
         
         self.network = network
