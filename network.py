@@ -85,9 +85,9 @@ class Network(object):
                     delta_j[i] = delta_j[i] * (result[i] - h[i])
 
                 deltas = [delta_j]
+                
                 # Backpropagation
-                for i in range(len(self.network)-1,-1,-1):
-
+                for i in range(len(self.network)-1,0,-1):
                     layer = self.network[i-1]
                     next_layer = self.network[i]
                     
@@ -101,12 +101,15 @@ class Network(object):
                         delta.append(d*neuron.activation_function_derivate())
 
                     deltas.append(delta)
-
+                
                 # Weights update
-                for l in range(1, len(self.network)):
-                    layer = self.network[i]
+                for l in range(len(self.network)):
+                    layer = self.network[l]
+                    delta = deltas[-(1+l)]
                     for i in range(len(layer)):
-                        delta = deltas[-(1+i)]
                         neuron = layer[i]
                         for j in range(len(neuron.weights)):
                             neuron.weights[j] += (learning_rate * neuron.get_activation_value() * delta[i])
+
+
+                            
