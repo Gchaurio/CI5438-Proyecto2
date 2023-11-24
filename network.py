@@ -73,7 +73,7 @@ class Network(object):
         data = data.join(y_train)
 
         for iteration in range(iters):
-            
+            print(iteration)
             for _, row in data.iterrows():
                 values = row[self.ind]
                 result = row[self.dep]
@@ -103,10 +103,10 @@ class Network(object):
                     deltas.append(delta)
 
                 # Weights update
-                for l in range(1,self.network):
-                    layer = self.network[l]
-                    for delta in reversed(deltas):
-                        for i in range(len(layer)):
-                            neuron = layer[i]
-                            for j in range(len(neuron.weights)):
-                                neuron.weights[j] += (learning_rate * neuron.get_activation_value() * delta[i])
+                for l in range(1, len(self.network)):
+                    layer = self.network[i]
+                    for i in range(len(layer)):
+                        delta = deltas[-(1+i)]
+                        neuron = layer[i]
+                        for j in range(len(neuron.weights)):
+                            neuron.weights[j] += (learning_rate * neuron.get_activation_value() * delta[i])
