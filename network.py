@@ -86,7 +86,7 @@ class Network(object):
             for neuron in layer:
                 neuron.values = x
 
-            x = [neuron.get_activation_value() for neuron in layer]
+            x = [neuron.get_activation_value() for neuron in layer] + [1.0]
 
         return x
     
@@ -116,6 +116,8 @@ class Network(object):
         self.error_minimo = []
     
         for iteration in range(iters):
+
+            print(iteration)
 
             for _, row in data.iterrows():
 
@@ -152,16 +154,8 @@ class Network(object):
                         delta.append(d*neuron.activation_function_derivate())
 
                     deltas.append(delta)
-                
-                # Weights update
-                for l in range(len(self.network)):
-                    layer = self.network[l]
-                    delta = deltas[-(1+l)]
-                    for i in range(len(layer)):
-                        neuron = layer[i]
+
+                    for i in range(len(next_layer)):
+                        neuron = next_layer[i]
                         for j in range(len(neuron.weights)):
-                            neuron.weights[j] += (learning_rate * neuron.get_activation_value() * delta[i])
-
-
-
-                            
+                            neuron.weights[j] += (learning_rate * neuron.values[j] * deltas[-2][i])                            

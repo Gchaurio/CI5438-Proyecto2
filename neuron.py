@@ -10,7 +10,7 @@ class Neuron(object):
         self.activation_value = None
 
     def calculate_values(self):
-
+        
         return np.dot(self.values, self.weights)
 
     def activation_function(self, z):
