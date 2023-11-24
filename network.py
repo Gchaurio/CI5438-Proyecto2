@@ -88,7 +88,7 @@ class Network(object):
 
             x = [neuron.get_activation_value() for neuron in layer] + [1.0]
 
-        return x
+        return x[:-1]
     
     # def error_data(self):
 
