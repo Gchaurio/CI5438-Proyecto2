@@ -12,7 +12,7 @@ class Network(object):
     def __init__(self, data: pd.DataFrame, ind, dep, neuron_layers):
 
         self.amount_neurons_layers = neuron_layers
-        self.n_layers = len(neuron_layers) + 1
+        self.n_layers = len(neuron_layers)
         self.ind = ind
         self.dep = dep 
         self.data = data
@@ -68,21 +68,20 @@ class Network(object):
 
         return df
 
-
     def form_network(self):
 
         ind = len(self.ind)
-        input_layer = [Neuron(np.array([random()] * ind)) for i in range(self.amount_neurons_layers[0])]
-        network = [input_layer]
+        second_layer = [Neuron(np.array([random()] * ind)) for i in range(self.amount_neurons_layers[0])]
+        network = [second_layer]
 
         for i in range(1, self.n_layers):
-            layer = [Neuron(np.array([random()] * len(network[-1]))) for n in range(self.amount_neurons_layers[i-1])]
+            layer = [Neuron(np.array(([random()] * len(network[-1])) + [1.0])) for n in range(self.amount_neurons_layers[i])]
             network.append(layer)
 
         self.network = network
 
     def evaluate(self, values):
-        x = values
+        x = values + [1.0]
         for layer in self.network:
             for neuron in layer:
                 neuron.values = x
@@ -118,8 +117,6 @@ class Network(object):
     
         for iteration in range(iters):
 
-            print(iteration)
-        
             for _, row in data.iterrows():
 
                 values = row[self.ind]
