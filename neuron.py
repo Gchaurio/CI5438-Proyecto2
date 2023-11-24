@@ -7,6 +7,7 @@ class Neuron(object):
 
         self.weights = weights
         self.values = None
+        self.activation_value = None
 
     def calculate_values(self):
 
@@ -22,6 +23,13 @@ class Neuron(object):
     
     def get_activation_value(self):
 
-        return self.activation_function(self.calculate_values())
+        self.activation_value = self.activation_function(self.calculate_values())
+
+        return self.activation_value
+    
+    def get_input_layer_value(self):
+
+        return self.activation_function(np.dot(self.values, np.ones(len(self.values))))
+
 
 
