@@ -35,38 +35,38 @@ class Network(object):
     
     def test(self):
         '''
-        Funcion que evalua los datos del conjunto de pruebas
-        luego de entrenar el modelo
+        Function that evaluates the test dataset after training the model
         '''
-        df = pd.DataFrame(columns=['pred', 'result'])
-        
-        # Se combinan los datos de prueba en un solo DataFrame
-        data = pd.concat([self.x_test,self.y_test],axis=1)
+        rows = []  # List to store rows
+
+        # Combine test data into a single DataFrame
+        data = pd.concat([self.x_test, self.y_test], axis=1)
 
         for _, row in data.iterrows():
 
             values = row[self.ind]
             result = row[self.dep]
 
-            # Evaluacion
+            # Evaluation
             prediction = self.evaluate(values)
 
             max_index = np.argmax(prediction)
-
             result_positive_index = np.argmax(result)
 
             if max_index == result_positive_index:
-                df = df.append({
-                'pred': prediction[max_index],
-                'result': result[result_positive_index],
-            }, ignore_index=True)
-            else: 
-                df = df.append({
-                'pred': "Incorrect classification",
-                'result': result[result_positive_index],
-            }, ignore_index=True)
+                rows.append({
+                    'pred': prediction[max_index],
+                    'result': result[result_positive_index],
+                })
+            else:
+                rows.append({
+                    'pred': "Incorrect classification",
+                    'result': result[result_positive_index],
+                })
 
+        df = pd.concat([pd.DataFrame([row]) for row in rows], ignore_index=True)  # Create DataFrame from the list of rows
         return df
+
 
     def form_network(self):
 
@@ -118,7 +118,7 @@ class Network(object):
         for iteration in range(iters):
 
             print(iteration)
-
+            error = []
             for _, row in data.iterrows():
 
                 values = row[self.ind]
@@ -128,16 +128,12 @@ class Network(object):
 
                 error = [result[i] - h[i] for i in range(len(result))]
 
-                self.error_medio.append(np.mean(error))
-                self.error_maximo.append(np.max(error))
-                self.error_minimo.append(np.min(error))
-
                 delta_j = [neuron.activation_function_derivate() for neuron in self.network[-1]]
                 delta_j = [delta_j[i] * error[i] for i in range(len(delta_j))]
 
                 deltas = [delta_j]
                 
-                # Backpropagation
+                # Backpropagation & Weight update
                 for l in range(len(self.network)-1,0,-1):
                     layer = self.network[l-1]
                     next_layer = self.network[l]
@@ -158,4 +154,8 @@ class Network(object):
                     for i in range(len(next_layer)):
                         neuron = next_layer[i]
                         for j in range(len(neuron.weights)):
-                            neuron.weights[j] += (learning_rate * neuron.values[j] * deltas[-2][i])                            
+                            neuron.weights[j] += (learning_rate * neuron.values[j] * deltas[-2][i])
+
+            self.error_medio.append(np.mean(error))
+            self.error_maximo.append(np.max(error))
+            self.error_minimo.append(np.min(error))
