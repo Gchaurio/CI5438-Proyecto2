@@ -71,7 +71,7 @@ class Network(object):
     def form_network(self):
 
         ind = len(self.ind)
-        second_layer = [Neuron(np.array([random()] * ind)) for i in range(self.amount_neurons_layers[0])]
+        second_layer = [Neuron(np.array(([random()] * ind) + [1.0])) for i in range(self.amount_neurons_layers[0])]
         network = [second_layer]
 
         for i in range(1, self.n_layers):
@@ -81,7 +81,7 @@ class Network(object):
         self.network = network
 
     def evaluate(self, values):
-        x = values + [1.0]
+        x = list(values) + [1.0]
         for layer in self.network:
             for neuron in layer:
                 neuron.values = x
