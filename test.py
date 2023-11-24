@@ -1,8 +1,11 @@
 import pandas as pd
 from network import Network
+import matplotlib.pyplot as plt
 
 dep = ['Iris-setosa','Iris-versicolor','Iris-virginica']
 ind = ['sepal_length','sepal_width','petal_length','petal_width']
 df = pd.read_csv("iris.csv")
-n = Network(df, ind, dep, [len(ind), 5, 4, len(dep)])
-n.train_network(3000, 0.1)
+#posible_class = len(df['species'].unique())
+n = Network(df, ind, dep, [10, 10, len(dep)])
+n.form_network()
+n.train_network(500, 0.01)
