@@ -14,6 +14,7 @@ class Network(object):
         self.dep = dep 
         self.data = data
         self.network = None
+        self.form_network()
     
     def get_training_test(self, data: pd.DataFrame):
 
@@ -23,12 +24,26 @@ class Network(object):
 
     def form_network(self):
 
+        ind = len(self.ind)
+        input_layer = [Neuron(np.array([random()] * ind)) for i in range(ind)]
         network = []
 
-        for i in range(self.n_layers):
+        for i in range(1, self.n_layers):
+            layer = [Neuron(np.array([random()] * j)) for j in range(self.amount_neurons_layers[i])]
+            network.append(layer)
+        
+        self.network = network
+
+    def form_network(self):
+
+        ind = len(self.ind)
+        input_layer = [Neuron(np.array([random()] * ind)) for i in range(ind)]
+        network = [input_layer]
+
+        for i in range(1, self.n_layers):
             layer = []
             for j in range (self.amount_neurons_layers[i]):
-                layer.append(Neuron(np.array([0.0] * len(self.ind))))
+                layer.append(Neuron(np.array([random()] * self.amount_neurons_layers[i-1])))
             network.append(layer)
         
         self.network = network
@@ -41,7 +56,7 @@ class Network(object):
 
     def evaluate(self, values):
         x = values
-        for layer in self.amount_neurons_layers:
+        for layer in self.network:
             for neuron in layer:
                 neuron.values = x
 
@@ -49,33 +64,32 @@ class Network(object):
 
         return x
 
+
     def train_network(self, iters, learning_rate):
 
-        self.w = [random() for i in range(len(self.dep))]
         x_train, self.x_test, y_train, self.y_test = self.get_training_test(self.data)
+        
         data = x_train
-        data.join(y_train)
+        data = data.join(y_train)
 
         for iteration in range(iters):
             
             for _, row in data.iterrows():
-                
                 values = row[self.ind]
                 result = row[self.dep]
 
                 h = self.evaluate(values)
-                delta_j = [neuron.activation_function_derivate() for neuron in self.amount_neurons_layers[-1]]
+                delta_j = [neuron.activation_function_derivate() for neuron in self.network[-1]]
                 
                 for i in range(len(delta_j)):
                     delta_j[i] = delta_j[i] * (result[i] - h[i])
 
                 deltas = [delta_j]
-
                 # Backpropagation
-                for i in range(len(self.amount_neurons_layers)-1,-1,-1):
+                for i in range(len(self.network)-1,-1,-1):
 
-                    layer = self.amount_neurons_layers[i]
-                    next_layer = self.amount_neurons_layers[i+1]
+                    layer = self.network[i-1]
+                    next_layer = self.network[i]
                     
                     delta = []
 
@@ -89,7 +103,8 @@ class Network(object):
                     deltas.append(delta)
 
                 # Weights update
-                for layer in self.amount_neurons_layers:
+                for l in range(1,self.network):
+                    layer = self.network[l]
                     for delta in reversed(deltas):
                         for i in range(len(layer)):
                             neuron = layer[i]
