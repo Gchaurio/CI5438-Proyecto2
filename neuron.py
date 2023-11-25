@@ -27,9 +27,6 @@ class Neuron(object):
 
         return self.activation_value
     
-    def get_input_layer_value(self):
-
-        return self.activation_function(np.dot(self.values, np.ones(len(self.values))))
 
 
 
