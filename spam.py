@@ -13,13 +13,12 @@ def load_column_names(file_path):
 
 def normalize_data(data: pd.DataFrame):
     
-    df = []
     for column in data.columns:
         mn = data[column].min()
         mx = data[column].max()
-        df.append(data[column].map(lambda x: (x - mn) / (mx - mn)))
+        data[column] = data[column].map(lambda x: (x - mn) / (mx - mn))
 
-    return pd.DataFrame(df)
+    return data
 
 def load_data(file_path, column_names):
     data = pd.read_csv(file_path, names=column_names)
@@ -29,8 +28,8 @@ def main():
     column_names = load_column_names("./spam/spambase.names")
     data = load_data("./spam/spambase.data", column_names)
 
-    network = Network(data, data.columns[:-1], [data.columns[-1]], [114, 1])
-    network.train_network(1000, 0.1)
+    network1 = Network(data, data.columns[:-1], [data.columns[-1]], [114, 1])
+    network1.train_network(50, 0.1)
 
 if __name__ == '__main__':
     main()
