@@ -118,7 +118,7 @@ class Network(object):
         for iteration in range(iters):
 
             print(iteration)
-            error = []
+            errors = []
             for _, row in data.iterrows():
 
                 values = row[self.ind]
@@ -126,7 +126,7 @@ class Network(object):
 
                 h = self.evaluate(values)
 
-                error = [result[i] - h[i] for i in range(len(result))]
+                error = [list(result)[i] - h[i] for i in range(len(result))]
 
                 delta_j = [neuron.activation_function_derivate() for neuron in self.network[-1]]
                 delta_j = [delta_j[i] * error[i] for i in range(len(delta_j))]
@@ -156,6 +156,8 @@ class Network(object):
                         for j in range(len(neuron.weights)):
                             neuron.weights[j] += (learning_rate * neuron.values[j] * deltas[-2][i])
 
-            self.error_medio.append(np.mean(error))
-            self.error_maximo.append(np.max(error))
-            self.error_minimo.append(np.min(error))
+                errors.append(np.mean([abs(i) for i in error]))
+
+            self.error_medio.append(np.mean(errors))
+            self.error_maximo.append(np.max(errors))
+            self.error_minimo.append(np.min(errors))
