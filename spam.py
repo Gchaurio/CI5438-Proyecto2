@@ -45,12 +45,5 @@ def main():
 
     X_train, X_test, y_train, y_test = train_test_split_data(X, y)
 
-    iterations, learning_rate = 10000, 0.1, 
-
-    print(X_train.columns, pd.DataFrame(y_train).columns)
-
     network = Network(X_train.join(y_train), X_train.columns, pd.DataFrame(y_train).columns, [114, 57, 1])
     network.train_network(1000, 0.1)
-
-if __name__ == "__main__":
-    main()
