@@ -198,8 +198,7 @@ class Network(object):
     
         for iteration in range(iters):
 
-            it_error = []
-
+            print(iteration)
 
             for _, row in data.iterrows():
 
