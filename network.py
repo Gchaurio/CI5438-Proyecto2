@@ -26,6 +26,7 @@ class Network(object):
         self.learning_rate = None
         self.form_network()
     
+    # Consigue el training y test set, gurada el set de test usado para el training para hacer testeos
     def get_training_test(self, data: pd.DataFrame):
 
         x_train, x_test, y_train, y_test = train_test_split(data[self.ind], data[self.dep], test_size=0.2, random_state=42)
@@ -35,10 +36,11 @@ class Network(object):
 
         return x_train, x_test, y_train, y_test
     
+    
     def test(self,species_classifier, testname, binary = False):
         '''
         Funcion que evalua los datos del conjunto de pruebas
-        luego de entrenar el modelo
+        luego de entrenar el modelo, los grafica y guarda un dataframe con informacion relevante
         '''
 
         if binary == True:
@@ -158,7 +160,9 @@ class Network(object):
             plt.show()
 
             return df
+        
 
+    # Crea la red de neuronas
     def form_network(self):
 
         ind = len(self.ind)
@@ -171,6 +175,7 @@ class Network(object):
 
         self.network = network
 
+    # Evalua la data  utilizando la funcion logistica como funcion de activacion
     def evaluate(self, values):
         x = list(values) + [1.0]
         for layer in self.network:
@@ -181,6 +186,7 @@ class Network(object):
 
         return x
     
+    # back-prop algorithm visto en clase
     def train_network(self, iters, learning_rate):
 
         self.learning_rate = learning_rate
